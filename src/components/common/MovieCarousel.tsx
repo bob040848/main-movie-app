@@ -36,7 +36,7 @@ export default function MovieCarousel({
   };
 
   return (
-    <section className="my-8">
+    <section className="my-8 ">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
         <div className="flex gap-2">

@@ -10,11 +10,20 @@ import {
   getUpcomingMovies,
 } from "@/lib/api";
 
+// Helper to ensure page is a valid number
+const ensureValidPage = (page: any): number => {
+  const parsedPage = parseInt(page, 10);
+  if (isNaN(parsedPage) || parsedPage < 1) return 1;
+  return Math.min(parsedPage, 500); // TMDb API has 500 page max
+};
+
 const createMovieHook =
   (key: any, fetchFn: any) =>
   (page = 1) => {
-    const { data, error, isLoading } = useSWR(`/${key}/${page}`, () =>
-      fetchFn(page)
+    const validPage = ensureValidPage(page);
+
+    const { data, error, isLoading } = useSWR(`/${key}/${validPage}`, () =>
+      fetchFn(validPage)
     );
 
     return {
@@ -43,9 +52,11 @@ export const useUpcomingMovies = createMovieHook(
 );
 
 export function useMovieSearch(query: string, page = 1) {
+  const validPage = ensureValidPage(page);
+
   const { data, error, isLoading } = useSWR(
-    query ? `/search/movie/${query}/${page}` : null,
-    () => searchMovies(query, page)
+    query ? `/search/movie/${query}/${validPage}` : null,
+    () => searchMovies(query, validPage)
   );
 
   return {
@@ -56,23 +67,25 @@ export function useMovieSearch(query: string, page = 1) {
   };
 }
 
-// hooks/useMovies.ts
 export function useMoviesByGenre(genreIds: number[], page = 1) {
-  const genreKey = genreIds?.length ? genreIds.sort().join("-") : null;
+  const validPage = ensureValidPage(page);
+
+  // Validate genreIds to ensure it's a valid array
+  const validGenreIds = Array.isArray(genreIds)
+    ? genreIds.filter((id) => !isNaN(Number(id)))
+    : [];
+  const genreKey = validGenreIds?.length
+    ? validGenreIds.sort().join("-")
+    : null;
 
   const { data, error, isLoading } = useSWR(
-    genreKey ? `/genre/${genreKey}/${page}` : null,
-    () => getMoviesByGenre(genreIds, page)
+    genreKey ? `/genre/${genreKey}/${validPage}` : null,
+    () => getMoviesByGenre(validGenreIds, validPage)
   );
 
-  // Debugging logs
-  if (data)
-    console.log(`Raw API data for genre ${genreKey}, page ${page}:`, data);
-  if (error) console.log(`Error fetching movies for genre ${genreKey}:`, error);
-
   return {
-    movies: data?.results || [], // Fallback to empty array
-    totalPages: data?.total_pages || 0, // Fallback to 0
+    movies: data?.results || [],
+    totalPages: data?.total_pages || 0,
     isLoading,
     isError: error,
   };

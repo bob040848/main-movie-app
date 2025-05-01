@@ -10,10 +10,18 @@ const tmdbApi = axios.create({
   },
 });
 
+const validatePage = (page: number): number => {
+  if (isNaN(Number(page)) || page < 1) {
+    return 1;
+  }
+  return Math.min(Math.floor(page), 500);
+};
+
 const fetchMovies = async (endpoint: string, page = 1) => {
   try {
+    const validPage = validatePage(page);
     const response = await tmdbApi.get(endpoint, {
-      params: { page },
+      params: { page: validPage },
     });
     return response.data;
   } catch (error) {
@@ -36,10 +44,11 @@ export const getUpcomingMovies = (page = 1) =>
 
 export const searchMovies = async (query: string, page = 1) => {
   try {
+    const validPage = validatePage(page);
     const response = await tmdbApi.get("/search/movie", {
       params: {
         query,
-        page,
+        page: validPage,
       },
     });
     return response.data;
@@ -51,9 +60,15 @@ export const searchMovies = async (query: string, page = 1) => {
 
 export const getMoviesByGenre = async (genreIds: number[], page = 1) => {
   try {
+    const validPage = validatePage(page);
+
+    if (!genreIds || !Array.isArray(genreIds) || genreIds.length === 0) {
+      throw new Error("Invalid genre IDs provided");
+    }
+
     const response = await tmdbApi.get("/discover/movie", {
       params: {
-        page,
+        page: validPage,
         with_genres: genreIds.join(","),
         sort_by: "popularity.desc",
         region: "US",
@@ -63,7 +78,7 @@ export const getMoviesByGenre = async (genreIds: number[], page = 1) => {
     return response.data;
   } catch (error: any) {
     console.error(
-      `Error fetching movies for genres ${genreIds.join(",")}:`,
+      `Error fetching movies for genres ${genreIds?.join(",") || "unknown"}:`,
       error.response?.data?.status_message || error.message
     );
     throw error;
@@ -72,6 +87,10 @@ export const getMoviesByGenre = async (genreIds: number[], page = 1) => {
 
 export const getMovieDetails = async (movieId: number) => {
   try {
+    if (!movieId || isNaN(Number(movieId))) {
+      throw new Error("Invalid movie ID");
+    }
+
     const response = await tmdbApi.get(`/movie/${movieId}`, {
       params: {
         append_to_response: "credits,similar,recommendations",
@@ -86,6 +105,10 @@ export const getMovieDetails = async (movieId: number) => {
 
 export const getMovieVideos = async (movieId: number) => {
   try {
+    if (!movieId || isNaN(Number(movieId))) {
+      throw new Error("Invalid movie ID");
+    }
+
     const response = await tmdbApi.get(`/movie/${movieId}/videos`);
     return response.data;
   } catch (error) {

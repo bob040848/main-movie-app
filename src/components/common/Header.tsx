@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useMovieSearch } from "@/hooks/useMovies";
+import GenreFilter from "./GenreFilter";
 
 import Image from "next/image";
 
@@ -53,13 +54,18 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-background border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-30 backdrop-blur-[50px]">
+    <header className="bg-background border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-30 backdrop-blur-[50px] ">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
-            <Film className="h-6 w-6" />
-            <span>MovieHub</span>
-          </Link>
+          <div className="flex items-center gap-4 text-indigo-600">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-2xl font-bold"
+            >
+              <Film className="h-6 w-6" />
+              <span>MovieHub</span>
+            </Link>
+          </div>
 
           <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
             <div
@@ -67,6 +73,7 @@ export default function Header() {
               className="relative w-full md:w-64 lg:w-96"
             >
               <form onSubmit={handleSearch} className="flex items-center gap-2">
+                <GenreFilter />
                 <div className="relative flex-1">
                   <Input
                     ref={searchInputRef}
@@ -81,7 +88,7 @@ export default function Header() {
                         setShowSearchResults(false);
                       }
                     }}
-                    className="pl-10 w-full"
+                    className="pl-10 w-full text-black dark:text-white"
                     onFocus={() => {
                       if (searchQuery.length >= 2) {
                         setShowSearchResults(true);
@@ -111,7 +118,7 @@ export default function Header() {
               </form>
 
               {showSearchResults && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-neutral-200 dark:border-neutral-800 rounded-md shadow-lg max-h-96 overflow-y-auto z-50">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-neutral-200 dark:border-neutral-800 rounded-md shadow-lg max-h-96 overflow-y-auto z-50 bg-white dark:bg-gray-900">
                   {isLoadingSearch ? (
                     <div className="p-4 text-center">Loading...</div>
                   ) : searchResults?.length === 0 ? (

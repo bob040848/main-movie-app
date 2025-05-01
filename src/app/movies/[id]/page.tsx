@@ -84,7 +84,7 @@ export default function MovieDetails() {
               size="sm"
               onClick={() => setShowTrailer(false)}
             >
-              Close
+              X
             </Button>
           </div>
         </div>
@@ -127,22 +127,9 @@ export default function MovieDetails() {
               </div>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <h2 className="text-xl font-semibold mb-2">Overview</h2>
-              <p>{movie.overview}</p>
-            </div>
-
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Genres</h2>
-              <div className="flex flex-wrap gap-2">
-                {movie.genres?.map((genre: any) => (
-                  <Link href={`/genre/${genre.id}`} key={genre.id}>
-                    <Button variant="secondary" size="sm">
-                      {genre.name}
-                    </Button>
-                  </Link>
-                ))}
-              </div>
+              <p className="text-3xl">{movie.overview}</p>
             </div>
           </div>
         </div>

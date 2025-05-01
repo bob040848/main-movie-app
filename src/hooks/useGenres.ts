@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { getGenres } from "@/lib/api";
 
-export function useGenres() {
+export const useGenres = () => {
   const { data, error, isLoading } = useSWR("genres", getGenres);
 
   return {
@@ -9,4 +9,4 @@ export function useGenres() {
     isLoading,
     isError: error,
   };
-}
+};

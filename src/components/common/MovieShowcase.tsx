@@ -93,7 +93,7 @@ export default function MovieShowcase() {
 
             <div className="flex flex-wrap gap-2 pt-2">
               <Link href={`/movies/${activeMovie.id}`}>
-                <Button className="flex items-center gap-2">
+                <Button className="flex items-center gap-2 text-white ">
                   <Play className="h-4 w-4" />
                   Watch Details
                 </Button>
