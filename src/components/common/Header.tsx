@@ -54,7 +54,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-background border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-30 backdrop-blur-[50px] ">
+    <header className="bg-background border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-30 backdrop-blur-[50px]">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4 text-indigo-600">
@@ -141,6 +141,7 @@ export default function Header() {
                                 }
                                 alt={movie.title}
                                 fill
+                                sizes="48px"
                                 className="object-cover rounded-sm"
                               />
                             </div>

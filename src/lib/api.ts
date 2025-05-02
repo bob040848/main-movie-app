@@ -126,3 +126,13 @@ export const getGenres = async () => {
     throw error;
   }
 };
+export async function getMovieCredits(movieId: number) {
+  const url = `${API_BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch movie credits");
+  }
+
+  return response.json();
+}

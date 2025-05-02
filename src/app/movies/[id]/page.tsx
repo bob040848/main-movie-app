@@ -1,10 +1,19 @@
+//src/movies/[id]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
 import { useMovieDetails, useMovieVideos } from "@/hooks/useMovies";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Star, Clock, Play } from "lucide-react";
+import {
+  Star,
+  Clock,
+  Play,
+  User,
+  Edit,
+  Film,
+  ChevronRight,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
@@ -42,6 +51,37 @@ export default function MovieDetails() {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "/placeholder.png";
 
+  // Get director(s)
+  const directors =
+    movie.credits?.crew?.filter((person: any) => person.job === "Director") ||
+    [];
+
+  // Get writers (Screenplay, Writer, Story) - remove duplicates by ID
+  const writersMap = new Map();
+  movie.credits?.crew
+    ?.filter((person: any) =>
+      ["Screenplay", "Writer", "Story"].includes(person.job)
+    )
+    .forEach((writer: any) => {
+      // If this writer is already in our map, combine their jobs
+      if (writersMap.has(writer.id)) {
+        const existingWriter = writersMap.get(writer.id);
+        if (existingWriter.job !== writer.job) {
+          existingWriter.job = `${existingWriter.job}, ${writer.job}`;
+        }
+      } else {
+        // Otherwise add them to the map
+        writersMap.set(writer.id, { ...writer });
+      }
+    });
+  const writers = Array.from(writersMap.values());
+
+  // Get top cast members (limit to 6)
+  const cast = movie.credits?.cast?.slice(0, 6) || [];
+
+  // Get similar movies (limit to 6 for display)
+  const similarMovies = movie.similar?.results?.slice(0, 6) || [];
+
   return (
     <div>
       <div className="relative h-[300px] md:h-[400px] lg:h-[500px] mb-8">
@@ -49,6 +89,7 @@ export default function MovieDetails() {
           src={backdropUrl}
           alt={movie.title}
           fill
+          sizes="100vw"
           priority
           className="object-cover"
         />
@@ -97,7 +138,9 @@ export default function MovieDetails() {
               src={posterUrl}
               alt={movie.title}
               fill
+              sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
+              priority
             />
           </div>
 
@@ -127,12 +170,142 @@ export default function MovieDetails() {
               </div>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Overview</h2>
-              <p className="text-3xl">{movie.overview}</p>
+              <p>{movie.overview}</p>
             </div>
+
+            {/* Director Section */}
+            {directors.length > 0 && (
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold mb-2 flex items-center">
+                  <Film className="mr-2 h-5 w-5" />
+                  Director{directors.length > 1 ? "s" : ""}
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {directors.map((director: any) => (
+                    <div key={director.id} className="flex items-center">
+                      <span className="font-medium">{director.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Writers Section */}
+            {writers.length > 0 && (
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold mb-2 flex items-center">
+                  <Edit className="mr-2 h-5 w-5" />
+                  Writer{writers.length > 1 ? "s" : ""}
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {writers.map((writer) => (
+                    <div key={writer.id} className="flex items-center">
+                      <span className="font-medium">{writer.name}</span>
+                      {writer.job && writer.job !== "Writer" && (
+                        <span className="text-muted-foreground ml-1">
+                          ({writer.job})
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cast Section */}
+            {cast.length > 0 && (
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold mb-2 flex items-center">
+                  <User className="mr-2 h-5 w-5" />
+                  Cast
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {cast.map((actor: any) => (
+                    <div key={actor.id} className="flex items-center">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden mr-2">
+                        <Image
+                          src={
+                            actor.profile_path
+                              ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
+                              : "/placeholder-avatar.png"
+                          }
+                          alt={actor.name}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                          priority
+                        />
+                      </div>
+                      <div>
+                        <div className="font-medium">{actor.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {actor.character}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Similar Movies Section */}
+        {similarMovies.length > 0 && (
+          <div className="mt-12 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">More Like This</h2>
+              <Link href={`/similar?id=${movieId}`}>
+                <Button
+                  variant="ghost"
+                  className="flex items-center text-primary"
+                >
+                  See more <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {similarMovies.map((movie: any) => (
+                <Link
+                  href={`/movies/${movie.id}`}
+                  key={movie.id}
+                  className="rounded-lg overflow-hidden bg-card border border-border hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="relative aspect-[2/3]">
+                    <Image
+                      src={
+                        movie.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                          : "/placeholder.png"
+                      }
+                      alt={movie.title}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      {movie.vote_average?.toFixed(1) || "N/A"}
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-medium text-sm line-clamp-1">
+                      {movie.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {movie.release_date
+                        ? new Date(movie.release_date).getFullYear()
+                        : "N/A"}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
