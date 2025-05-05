@@ -54,6 +54,32 @@ export default function MovieShowcase() {
 
   return (
     <div className="relative w-full h-96 md:h-[500px] rounded-lg overflow-hidden">
+      {/* Left navigation button */}
+      <div className="absolute left-0 top-0 bottom-0 flex items-center z-10 px-2">
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-black/30 text-white border-white/20 hover:bg-black/50"
+          onClick={handlePrev}
+          aria-label="Previous movie"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+      </div>
+
+      {/* Right navigation button */}
+      <div className="absolute right-0 top-0 bottom-0 flex items-center z-10 px-2">
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-black/30 text-white border-white/20 hover:bg-black/50"
+          onClick={handleNext}
+          aria-label="Next movie"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </Button>
+      </div>
+
       <div className="absolute inset-0">
         <Image
           src={backdropUrl}
@@ -103,29 +129,8 @@ export default function MovieShowcase() {
         </div>
       </div>
 
-      <div className="absolute bottom-5 right-5 flex gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-black/30 text-white border-white/20 hover:bg-black/50"
-          onClick={handlePrev}
-          aria-label="Previous movie"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-black/30 text-white border-white/20 hover:bg-black/50"
-          onClick={handleNext}
-          aria-label="Next movie"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </Button>
-      </div>
-
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-1">
-        {movies.slice(0, 5).map((_: any, index: any) => (
+        {movies.slice(0, 10).map((_: any, index: any) => (
           <button
             key={index}
             className={`h-1.5 rounded-full transition-all ${

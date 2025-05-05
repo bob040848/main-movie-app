@@ -14,7 +14,8 @@ const validatePage = (page: number): number => {
   if (isNaN(Number(page)) || page < 1) {
     return 1;
   }
-  return Math.min(Math.floor(page), 500);
+  // Limit to 10 pages as per requirement
+  return Math.min(Math.floor(page), 10);
 };
 
 const fetchMovies = async (endpoint: string, page = 1) => {
@@ -23,7 +24,14 @@ const fetchMovies = async (endpoint: string, page = 1) => {
     const response = await tmdbApi.get(endpoint, {
       params: { page: validPage },
     });
-    return response.data;
+
+    // Limit total pages to 10 in the response
+    const modifiedResponse = {
+      ...response.data,
+      total_pages: Math.min(response.data.total_pages, 10),
+    };
+
+    return modifiedResponse;
   } catch (error) {
     console.error(`Error fetching from ${endpoint}:`, error);
     throw error;
@@ -51,7 +59,14 @@ export const searchMovies = async (query: string, page = 1) => {
         page: validPage,
       },
     });
-    return response.data;
+
+    // Limit total pages to 10 in the response
+    const modifiedResponse = {
+      ...response.data,
+      total_pages: Math.min(response.data.total_pages, 10),
+    };
+
+    return modifiedResponse;
   } catch (error) {
     console.error("Error searching movies:", error);
     throw error;
@@ -75,7 +90,14 @@ export const getMoviesByGenre = async (genreIds: number[], page = 1) => {
         "primary_release_date.gte": "1980-01-01",
       },
     });
-    return response.data;
+
+    // Limit total pages to 10 in the response
+    const modifiedResponse = {
+      ...response.data,
+      total_pages: Math.min(response.data.total_pages, 10),
+    };
+
+    return modifiedResponse;
   } catch (error: any) {
     console.error(
       `Error fetching movies for genres ${genreIds?.join(",") || "unknown"}:`,
@@ -126,6 +148,7 @@ export const getGenres = async () => {
     throw error;
   }
 };
+
 export async function getMovieCredits(movieId: number) {
   const url = `${API_BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`;
   const response = await fetch(url);

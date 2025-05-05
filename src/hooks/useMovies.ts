@@ -10,11 +10,10 @@ import {
   getUpcomingMovies,
 } from "@/lib/api";
 
-// Helper to ensure page is a valid number
 const ensureValidPage = (page: any): number => {
   const parsedPage = parseInt(page, 10);
   if (isNaN(parsedPage) || parsedPage < 1) return 1;
-  return Math.min(parsedPage, 500); // TMDb API has 500 page max
+  return Math.min(parsedPage, 500);
 };
 
 const createMovieHook =
@@ -70,7 +69,6 @@ export function useMovieSearch(query: string, page = 1) {
 export function useMoviesByGenre(genreIds: number[], page = 1) {
   const validPage = ensureValidPage(page);
 
-  // Validate genreIds to ensure it's a valid array
   const validGenreIds = Array.isArray(genreIds)
     ? genreIds.filter((id) => !isNaN(Number(id)))
     : [];

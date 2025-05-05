@@ -1,3 +1,4 @@
+//src/app/genres/@movies/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -5,14 +6,14 @@ import { useSearchParams } from "next/navigation";
 import { useMoviesByGenre } from "@/hooks/useMovies";
 import MovieCard from "@/components/common/MovieCard";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import Pagination from "@/components/common/Pagination";
+import { Movie } from "@/types";
 
 export default function GenreMoviesPage() {
   const searchParams = useSearchParams();
   const genreId = searchParams.get("id");
   const genreName = searchParams.get("name");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
 
   const { movies, totalPages, isLoading } = useMoviesByGenre(
     genreId ? [parseInt(genreId)] : [],
@@ -22,6 +23,11 @@ export default function GenreMoviesPage() {
   useEffect(() => {
     setPage(1);
   }, [genreId]);
+
+  const handlePageChange = (newPage: number): void => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (!genreId) {
     return (
@@ -46,7 +52,7 @@ export default function GenreMoviesPage() {
           ? Array(8)
               .fill(0)
               .map((_, i) => <MovieCardSkeleton key={i} />)
-          : movies?.map((movie: any) => (
+          : movies?.map((movie: Movie) => (
               <MovieCard key={movie.id} movie={movie} />
             ))}
       </div>
@@ -57,61 +63,12 @@ export default function GenreMoviesPage() {
         </div>
       )}
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={page === 1 || isLoading}
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
-
-          <div className="flex items-center gap-1">
-            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-              const pageNumber = i + 1;
-              return (
-                <Button
-                  key={i}
-                  variant={page === pageNumber ? "default" : "outline"}
-                  size="sm"
-                  className="w-8 h-8 p-0"
-                  onClick={() => setPage(pageNumber)}
-                  disabled={isLoading}
-                >
-                  {pageNumber}
-                </Button>
-              );
-            })}
-            {totalPages > 5 && (
-              <>
-                <span className="px-1">...</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-8 h-8 p-0"
-                  onClick={() => setPage(totalPages)}
-                  disabled={isLoading}
-                >
-                  {totalPages}
-                </Button>
-              </>
-            )}
-          </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages || 1))}
-            disabled={page === totalPages || isLoading}
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages || 0}
+        onPageChange={handlePageChange}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

@@ -55,7 +55,6 @@ export default function SimilarMoviesMorePage() {
 
   const similarMovies = movie.similar?.results || [];
 
-  // Sort movies based on the selected option
   const sortedMovies = [...similarMovies].sort((a, b) => {
     if (sortBy === "popularity.desc") {
       return b.popularity - a.popularity;
@@ -180,15 +179,12 @@ export default function SimilarMoviesMorePage() {
   );
 }
 
-// Helper function to get genre name from genre ID
 function getGenreName(genreId: number, movie: any): string {
-  // The movie details might have genres information
   if (movie.genres) {
     const genre = movie.genres.find((g: any) => g.id === genreId);
     if (genre) return genre.name;
   }
 
-  // Common genre IDs and names as fallback
   const genreMap: Record<number, string> = {
     28: "Action",
     12: "Adventure",

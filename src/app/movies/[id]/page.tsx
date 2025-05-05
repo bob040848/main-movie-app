@@ -51,35 +51,29 @@ export default function MovieDetails() {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "/placeholder.png";
 
-  // Get director(s)
   const directors =
     movie.credits?.crew?.filter((person: any) => person.job === "Director") ||
     [];
 
-  // Get writers (Screenplay, Writer, Story) - remove duplicates by ID
   const writersMap = new Map();
   movie.credits?.crew
     ?.filter((person: any) =>
       ["Screenplay", "Writer", "Story"].includes(person.job)
     )
     .forEach((writer: any) => {
-      // If this writer is already in our map, combine their jobs
       if (writersMap.has(writer.id)) {
         const existingWriter = writersMap.get(writer.id);
         if (existingWriter.job !== writer.job) {
           existingWriter.job = `${existingWriter.job}, ${writer.job}`;
         }
       } else {
-        // Otherwise add them to the map
         writersMap.set(writer.id, { ...writer });
       }
     });
   const writers = Array.from(writersMap.values());
 
-  // Get top cast members (limit to 6)
   const cast = movie.credits?.cast?.slice(0, 6) || [];
 
-  // Get similar movies (limit to 6 for display)
   const similarMovies = movie.similar?.results?.slice(0, 6) || [];
 
   return (
@@ -175,7 +169,6 @@ export default function MovieDetails() {
               <p>{movie.overview}</p>
             </div>
 
-            {/* Director Section */}
             {directors.length > 0 && (
               <div className="mb-4">
                 <h2 className="text-xl font-semibold mb-2 flex items-center">
@@ -192,7 +185,6 @@ export default function MovieDetails() {
               </div>
             )}
 
-            {/* Writers Section */}
             {writers.length > 0 && (
               <div className="mb-4">
                 <h2 className="text-xl font-semibold mb-2 flex items-center">
@@ -214,7 +206,6 @@ export default function MovieDetails() {
               </div>
             )}
 
-            {/* Cast Section */}
             {cast.length > 0 && (
               <div className="mb-4">
                 <h2 className="text-xl font-semibold mb-2 flex items-center">
@@ -252,7 +243,6 @@ export default function MovieDetails() {
           </div>
         </div>
 
-        {/* Similar Movies Section */}
         {similarMovies.length > 0 && (
           <div className="mt-12 mb-8">
             <div className="flex justify-between items-center mb-6">

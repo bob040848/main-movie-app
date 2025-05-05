@@ -56,22 +56,46 @@ export default function Header() {
   return (
     <header className="bg-background border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-30 backdrop-blur-[50px]">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-indigo-600">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="flex items-center gap-2 text-2xl font-bold"
+              className="flex items-center gap-2 text-2xl font-bold text-indigo-600"
             >
               <Film className="h-6 w-6" />
               <span>MovieHub</span>
             </Link>
+
+            {/* Theme toggle button moved for mobile/tablet layout */}
+            <div className="block lg:hidden">
+              {mounted ? (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  aria-label="Toggle theme"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Toggle theme"
+                  disabled
+                >
+                  <div className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-            <div
-              ref={searchContainerRef}
-              className="relative w-full md:w-64 lg:w-96"
-            >
+          <div className="flex flex-1 md:max-w-xl lg:max-w-2xl mx-auto lg:mx-0">
+            <div ref={searchContainerRef} className="relative w-full">
               <form onSubmit={handleSearch} className="flex items-center gap-2">
                 <GenreFilter />
                 <div className="relative flex-1">
@@ -183,29 +207,32 @@ export default function Header() {
             </div>
           </div>
 
-          {mounted ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Toggle theme"
-              disabled
-            >
-              <div className="h-5 w-5" />
-            </Button>
-          )}
+          {/* Theme toggle button for desktop layout */}
+          <div className="hidden lg:block">
+            {mounted ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle theme"
+                disabled
+              >
+                <div className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </header>

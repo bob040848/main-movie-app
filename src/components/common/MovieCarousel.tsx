@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import MovieCard from "./MovieCard";
 import { Movie } from "@/types/index";
 import MovieCardSkeleton from "./MovieCardSkeleton";
@@ -13,69 +11,46 @@ interface MovieCarouselProps {
   isLoading?: boolean;
 }
 
+const ITEMS_PER_PAGE = 6;
+
 export default function MovieCarousel({
   title,
-  movies,
+  movies = [],
   isLoading,
 }: MovieCarouselProps) {
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [displayedMovies, setDisplayedMovies] = useState<Movie[]>([]);
+  const totalPages = Math.ceil((movies?.length || 0) / ITEMS_PER_PAGE);
 
-  const scroll = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const { scrollLeft, clientWidth } = carouselRef.current;
-      const scrollTo =
-        direction === "left"
-          ? scrollLeft - clientWidth / 2
-          : scrollLeft + clientWidth / 2;
-
-      carouselRef.current.scrollTo({
-        left: scrollTo,
-        behavior: "smooth",
-      });
+  useEffect(() => {
+    if (movies?.length) {
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      setDisplayedMovies(movies.slice(startIndex, endIndex));
     }
+  }, [currentPage, movies]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
-    <section className="my-8 ">
+    <section className="my-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => scroll("left")}
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => scroll("right")}
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
 
-      <div
-        ref={carouselRef}
-        className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x"
-      >
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {isLoading
-          ? Array(6)
+          ? Array(ITEMS_PER_PAGE)
               .fill(0)
               .map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-40 md:w-48 snap-start">
+                <div key={i} className="w-full">
                   <MovieCardSkeleton />
                 </div>
               ))
-          : movies?.map((movie) => (
-              <div
-                key={movie.id}
-                className="flex-shrink-0 w-40 md:w-48 snap-start"
-              >
+          : displayedMovies?.map((movie) => (
+              <div key={movie.id} className="w-full">
                 <MovieCard movie={movie} />
               </div>
             ))}

@@ -1,7 +1,10 @@
+//src/app/page.tsx
 "use client";
 
+import { useState } from "react";
 import MovieShowcase from "@/components/common/MovieShowcase";
 import MovieCarousel from "@/components/common/MovieCarousel";
+import Pagination from "@/components/common/Pagination";
 
 import {
   usePopularMovies,
@@ -10,12 +13,27 @@ import {
 } from "@/hooks/useMovies";
 
 export default function HomePage() {
-  const { movies: popularMovies, isLoading: isLoadingPopular } =
-    usePopularMovies();
+  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    movies: popularMovies,
+    totalPages: popularTotalPages,
+    isLoading: isLoadingPopular,
+  } = usePopularMovies(currentPage);
   const { movies: topRatedMovies, isLoading: isLoadingTopRated } =
-    useTopRatedMovies();
+    useTopRatedMovies(currentPage);
   const { movies: upcomingMovies, isLoading: isLoadingUpcoming } =
-    useUpcomingMovies();
+    useUpcomingMovies(currentPage);
+
+  // Use the total pages returned by the API (limited to 10 in the API)
+  const totalPages = popularTotalPages || 10;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const isLoading = isLoadingPopular || isLoadingTopRated || isLoadingUpcoming;
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -37,6 +55,14 @@ export default function HomePage() {
         title="Upcoming Movies"
         movies={upcomingMovies}
         isLoading={isLoadingUpcoming}
+      />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        isLoading={isLoading}
+        className="mt-12 mb-8"
       />
     </main>
   );
