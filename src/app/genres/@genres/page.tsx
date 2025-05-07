@@ -1,25 +1,12 @@
-"use client";
+import GenresListPage from "@/components/common/GenreAtPages";
+import React, { Suspense } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import GenreList from "@/components/common/GenreList";
-import { Suspense } from "react";
-
-export default function GenresListPage() {
-  const searchParams = useSearchParams();
-  const activeGenreId = searchParams.get("id");
-  const router = useRouter();
-
-  const handleGenreClick = (genreId: number, genreName: string) => {
-    router.push(`/genres?id=${genreId}&name=${encodeURIComponent(genreName)}`);
-  };
-
+const GenresAt = () => {
   return (
     <Suspense>
-      <GenreList
-        activeGenreId={activeGenreId}
-        onGenreClick={handleGenreClick}
-        showSearch={true}
-      />
+      <GenresListPage />
     </Suspense>
   );
-}
+};
+
+export default GenresAt;
