@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import MovieShowcase from "@/components/common/MovieShowcase";
 import MovieCarousel from "@/components/common/MovieCarousel";
 import Pagination from "@/components/common/Pagination";
@@ -32,34 +32,36 @@ export default function HomePage() {
   const isLoading = isLoadingPopular || isLoadingTopRated || isLoadingUpcoming;
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <MovieShowcase />
+    <Suspense>
+      <main className="container mx-auto px-4 py-8">
+        <MovieShowcase />
 
-      <MovieCarousel
-        title="Popular Movies"
-        movies={popularMovies}
-        isLoading={isLoadingPopular}
-      />
+        <MovieCarousel
+          title="Popular Movies"
+          movies={popularMovies}
+          isLoading={isLoadingPopular}
+        />
 
-      <MovieCarousel
-        title="Top Rated Movies"
-        movies={topRatedMovies}
-        isLoading={isLoadingTopRated}
-      />
+        <MovieCarousel
+          title="Top Rated Movies"
+          movies={topRatedMovies}
+          isLoading={isLoadingTopRated}
+        />
 
-      <MovieCarousel
-        title="Upcoming Movies"
-        movies={upcomingMovies}
-        isLoading={isLoadingUpcoming}
-      />
+        <MovieCarousel
+          title="Upcoming Movies"
+          movies={upcomingMovies}
+          isLoading={isLoadingUpcoming}
+        />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        isLoading={isLoading}
-        className="mt-12 mb-8"
-      />
-    </main>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          isLoading={isLoading}
+          className="mt-12 mb-8"
+        />
+      </main>
+    </Suspense>
   );
 }

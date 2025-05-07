@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useMoviesByGenre } from "@/hooks/useMovies";
 import MovieCard from "@/components/common/MovieCard";
@@ -37,37 +37,41 @@ export default function GenreMoviesPage() {
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <h2 className="text-xl font-bold">
-          {genreName
-            ? `${movies?.length || 0} titles in "${genreName}"`
-            : "Movies"}
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {isLoading
-          ? Array(8)
-              .fill(0)
-              .map((_, i) => <MovieCardSkeleton key={i} />)
-          : movies?.map((movie: Movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-      </div>
-
-      {!isLoading && movies?.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No movies found in this genre</p>
+    <Suspense>
+      <div>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold">
+            {genreName
+              ? `${movies?.length || 0} titles in "${genreName}"`
+              : "Movies"}
+          </h2>
         </div>
-      )}
 
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages || 0}
-        onPageChange={handlePageChange}
-        isLoading={isLoading}
-      />
-    </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {isLoading
+            ? Array(8)
+                .fill(0)
+                .map((_, i) => <MovieCardSkeleton key={i} />)
+            : movies?.map((movie: Movie) => (
+                <MovieCard key={movie.id} movie={movie} />
+              ))}
+        </div>
+
+        {!isLoading && movies?.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              No movies found in this genre
+            </p>
+          </div>
+        )}
+
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages || 0}
+          onPageChange={handlePageChange}
+          isLoading={isLoading}
+        />
+      </div>
+    </Suspense>
   );
 }

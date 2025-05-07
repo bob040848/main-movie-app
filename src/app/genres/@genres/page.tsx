@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import GenreList from "@/components/common/GenreList";
+import { Suspense } from "react";
 
 export default function GenresListPage() {
   const searchParams = useSearchParams();
@@ -13,10 +14,12 @@ export default function GenresListPage() {
   };
 
   return (
-    <GenreList
-      activeGenreId={activeGenreId}
-      onGenreClick={handleGenreClick}
-      showSearch={true}
-    />
+    <Suspense>
+      <GenreList
+        activeGenreId={activeGenreId}
+        onGenreClick={handleGenreClick}
+        showSearch={true}
+      />
+    </Suspense>
   );
 }
