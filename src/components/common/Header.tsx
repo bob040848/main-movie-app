@@ -112,7 +112,7 @@ export default function Header() {
                         setShowSearchResults(false);
                       }
                     }}
-                    className="pl-10 w-full text-black dark:text-white"
+                    className="pl-10 w-full"
                     onFocus={() => {
                       if (searchQuery.length >= 2) {
                         setShowSearchResults(true);

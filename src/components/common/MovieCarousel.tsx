@@ -18,10 +18,8 @@ export default function MovieCarousel({
   movies = [],
   isLoading,
 }: MovieCarouselProps) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = 1;
   const [displayedMovies, setDisplayedMovies] = useState<Movie[]>([]);
-
-  const totalPages = Math.ceil((movies?.length || 0) / ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (movies?.length) {
@@ -31,45 +29,10 @@ export default function MovieCarousel({
     }
   }, [currentPage, movies]);
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   return (
     <section className="my-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
-        {totalPages > 1 && (
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className="px-2 py-1 bg-gray-700 rounded disabled:opacity-50"
-              aria-label="Previous page"
-            >
-              &lt;
-            </button>
-            <span className="text-sm">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className="px-2 py-1 bg-gray-700 rounded disabled:opacity-50"
-              aria-label="Next page"
-            >
-              &gt;
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
