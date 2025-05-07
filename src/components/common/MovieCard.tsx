@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import { Movie } from "@/types/index";
 
-interface MovieCardProps {
+type MovieCardProps = {
   movie: Movie;
-}
+};
 
 export default function MovieCard({ movie }: MovieCardProps) {
   const imageUrl = movie.poster_path

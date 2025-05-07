@@ -2,13 +2,13 @@ import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface PaginationProps {
+type PaginationProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   isLoading?: boolean;
   className?: string;
-}
+};
 
 const Pagination: FC<PaginationProps> = ({
   currentPage,

@@ -9,6 +9,7 @@ import {
   getTopRatedMovies,
   getUpcomingMovies,
 } from "@/lib/api";
+import { Movie, MoviesResponse, Video } from "@/types/index";
 
 const ensureValidPage = (page: number | string): number => {
   const parsedPage = parseInt(String(page), 10);
@@ -16,11 +17,18 @@ const ensureValidPage = (page: number | string): number => {
   return Math.min(parsedPage, 500);
 };
 
-type FetchFunction = (page: number) => Promise<any>;
+type FetchFunction = (page: number) => Promise<MoviesResponse>;
+
+type UseMoviesResult = {
+  movies: Movie[] | undefined;
+  totalPages: number | undefined;
+  isLoading: boolean;
+  isError: Error | undefined;
+};
 
 const createMovieHook =
   (key: string, fetchFn: FetchFunction) =>
-  (page = 1) => {
+  (page = 1): UseMoviesResult => {
     const validPage = ensureValidPage(page);
 
     const { data, error, isLoading } = useSWR(`/${key}/${validPage}`, () =>
@@ -52,7 +60,7 @@ export const useUpcomingMovies = createMovieHook(
   getUpcomingMovies
 );
 
-export function useMovieSearch(query: string, page = 1) {
+export function useMovieSearch(query: string, page = 1): UseMoviesResult {
   const validPage = ensureValidPage(page);
 
   const { data, error, isLoading } = useSWR(
@@ -68,7 +76,10 @@ export function useMovieSearch(query: string, page = 1) {
   };
 }
 
-export function useMoviesByGenre(genreIds: number[], page = 1) {
+export function useMoviesByGenre(
+  genreIds: number[],
+  page = 1
+): UseMoviesResult {
   const validPage = ensureValidPage(page);
 
   const validGenreIds = Array.isArray(genreIds)
@@ -91,7 +102,13 @@ export function useMoviesByGenre(genreIds: number[], page = 1) {
   };
 }
 
-export function useMovieDetails(movieId: number) {
+type MovieDetailsResult = {
+  movie: Movie | undefined;
+  isLoading: boolean;
+  isError: Error | undefined;
+};
+
+export function useMovieDetails(movieId: number): MovieDetailsResult {
   const { data, error, isLoading } = useSWR(
     movieId ? `/movie/${movieId}` : null,
     () => getMovieDetails(movieId)
@@ -104,7 +121,13 @@ export function useMovieDetails(movieId: number) {
   };
 }
 
-export function useMovieVideos(movieId: number) {
+type MovieVideosResult = {
+  videos: Video[] | undefined;
+  isLoading: boolean;
+  isError: Error | undefined;
+};
+
+export function useMovieVideos(movieId: number): MovieVideosResult {
   const { data, error, isLoading } = useSWR(
     movieId ? `/movie/${movieId}/videos` : null,
     () => getMovieVideos(movieId)

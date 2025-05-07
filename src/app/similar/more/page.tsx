@@ -9,6 +9,7 @@ import { ArrowLeft, Star, Filter, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
 import { Movie } from "@/types";
+
 export default function SimilarMoviesMorePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -57,10 +58,16 @@ export default function SimilarMoviesMorePage() {
 
   const sortedMovies = [...similarMovies].sort((a, b) => {
     if (sortBy === "popularity.desc") {
-      return b.popularity - a.popularity;
+      const popA = a.popularity ?? 0;
+      const popB = b.popularity ?? 0;
+      return popB - popA;
     } else if (sortBy === "vote_average.desc") {
-      return b.vote_average - a.vote_average;
+      const voteA = a.vote_average ?? 0;
+      const voteB = b.vote_average ?? 0;
+      return voteB - voteA;
     } else if (sortBy === "release_date.desc") {
+      if (!a.release_date) return 1;
+      if (!b.release_date) return -1;
       return (
         new Date(b.release_date).getTime() - new Date(a.release_date).getTime()
       );

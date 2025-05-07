@@ -6,14 +6,14 @@ import GenreButton from "./GenreButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Genre } from "@/types";
 
-interface GenreListProps {
+type GenreListProps = {
   title?: string;
   subtitle?: string;
   activeGenreId?: string | null;
   onGenreClick?: (id: number, name: string) => void;
   columns?: 1 | 2;
   showSearch?: boolean;
-}
+};
 
 export default function GenreList({
   title = "Genres",

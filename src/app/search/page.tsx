@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useMovieSearch } from "@/hooks/useMovies";
 import MovieCard from "@/components/common/MovieCard";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";

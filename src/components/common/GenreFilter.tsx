@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useGenres } from "@/hooks/useGenres";
 import { Genre } from "@/types";
 
-interface GenreFilterProps {
+type GenreFilterProps = {
   className?: string;
-}
+};
 
 export default function GenreFilter({ className }: GenreFilterProps) {
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);

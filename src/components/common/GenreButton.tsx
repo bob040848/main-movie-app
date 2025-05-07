@@ -3,13 +3,13 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-interface GenreButtonProps {
+type GenreButtonProps = {
   id: number;
   name: string;
   isActive?: boolean;
   className?: string;
   onClick?: () => void;
-}
+};
 
 export default function GenreButton({
   id,
