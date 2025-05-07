@@ -1,4 +1,3 @@
-//src/app/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -24,13 +23,10 @@ export default function HomePage() {
   const { movies: upcomingMovies, isLoading: isLoadingUpcoming } =
     useUpcomingMovies(currentPage);
 
-  // Use the total pages returned by the API (limited to 10 in the API)
   const totalPages = popularTotalPages || 10;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Scroll to top when page changes
-    // window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const isLoading = isLoadingPopular || isLoadingTopRated || isLoadingUpcoming;

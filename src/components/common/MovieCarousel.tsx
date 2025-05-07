@@ -20,7 +20,6 @@ export default function MovieCarousel({
 }: MovieCarouselProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedMovies, setDisplayedMovies] = useState<Movie[]>([]);
-  const totalPages = Math.ceil((movies?.length || 0) / ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (movies?.length) {
@@ -29,10 +28,6 @@ export default function MovieCarousel({
       setDisplayedMovies(movies.slice(startIndex, endIndex));
     }
   }, [currentPage, movies]);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   return (
     <section className="my-8">

@@ -10,14 +10,16 @@ import {
   getUpcomingMovies,
 } from "@/lib/api";
 
-const ensureValidPage = (page: any): number => {
-  const parsedPage = parseInt(page, 10);
+const ensureValidPage = (page: number | string): number => {
+  const parsedPage = parseInt(String(page), 10);
   if (isNaN(parsedPage) || parsedPage < 1) return 1;
   return Math.min(parsedPage, 500);
 };
 
+type FetchFunction = (page: number) => Promise<any>;
+
 const createMovieHook =
-  (key: any, fetchFn: any) =>
+  (key: string, fetchFn: FetchFunction) =>
   (page = 1) => {
     const validPage = ensureValidPage(page);
 

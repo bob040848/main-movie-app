@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Star, Filter, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
-
+import { Movie } from "@/types";
 export default function SimilarMoviesMorePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -161,7 +161,7 @@ export default function SimilarMoviesMorePage() {
                     : "N/A"}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  {movie.genre_ids?.slice(0, 2).map((genreId: any) => (
+                  {movie.genre_ids?.slice(0, 2).map((genreId: number) => (
                     <span
                       key={genreId}
                       className="text-xs bg-muted px-2 py-0.5 rounded-full"
@@ -179,9 +179,9 @@ export default function SimilarMoviesMorePage() {
   );
 }
 
-function getGenreName(genreId: number, movie: any): string {
+function getGenreName(genreId: number, movie: Movie): string {
   if (movie.genres) {
-    const genre = movie.genres.find((g: any) => g.id === genreId);
+    const genre = movie.genres.find((g) => g.id === genreId);
     if (genre) return genre.name;
   }
 

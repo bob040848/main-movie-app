@@ -1,4 +1,3 @@
-//src/movies/[id]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
@@ -17,7 +16,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
-
+import { Movie, Video, Cast, Crew } from "@/types";
 export default function MovieDetails() {
   const { id } = useParams();
   const movieId =
@@ -32,7 +31,7 @@ export default function MovieDetails() {
 
   const trailer =
     videos?.find(
-      (video: any) => video.type === "Trailer" && video.site === "YouTube"
+      (video: Video) => video.type === "Trailer" && video.site === "YouTube"
     ) || videos?.[0];
 
   if (isLoading) {
@@ -52,15 +51,15 @@ export default function MovieDetails() {
     : "/placeholder.png";
 
   const directors =
-    movie.credits?.crew?.filter((person: any) => person.job === "Director") ||
+    movie.credits?.crew?.filter((person: Crew) => person.job === "Director") ||
     [];
 
   const writersMap = new Map();
   movie.credits?.crew
-    ?.filter((person: any) =>
+    ?.filter((person: Crew) =>
       ["Screenplay", "Writer", "Story"].includes(person.job)
     )
-    .forEach((writer: any) => {
+    .forEach((writer: Crew) => {
       if (writersMap.has(writer.id)) {
         const existingWriter = writersMap.get(writer.id);
         if (existingWriter.job !== writer.job) {
@@ -142,7 +141,7 @@ export default function MovieDetails() {
             <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
             {movie.tagline && (
               <p className="text-lg text-muted-foreground italic mb-4">
-                "{movie.tagline}"
+                &ldquo;{movie.tagline}&rdquo;
               </p>
             )}
 
@@ -176,7 +175,7 @@ export default function MovieDetails() {
                   Director{directors.length > 1 ? "s" : ""}
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {directors.map((director: any) => (
+                  {directors.map((director: Crew) => (
                     <div key={director.id} className="flex items-center">
                       <span className="font-medium">{director.name}</span>
                     </div>
@@ -213,7 +212,7 @@ export default function MovieDetails() {
                   Cast
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {cast.map((actor: any) => (
+                  {cast.map((actor: Cast) => (
                     <div key={actor.id} className="flex items-center">
                       <div className="relative w-10 h-10 rounded-full overflow-hidden mr-2">
                         <Image
@@ -258,7 +257,7 @@ export default function MovieDetails() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {similarMovies.map((movie: any) => (
+              {similarMovies.map((movie: Movie) => (
                 <Link
                   href={`/movies/${movie.id}`}
                   key={movie.id}

@@ -11,6 +11,7 @@ import { useMovieSearch } from "@/hooks/useMovies";
 import GenreFilter from "./GenreFilter";
 
 import Image from "next/image";
+import { Movie } from "@/types";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,7 +67,6 @@ export default function Header() {
               <span>MovieHub</span>
             </Link>
 
-            {/* Theme toggle button moved for mobile/tablet layout */}
             <div className="block lg:hidden">
               {mounted ? (
                 <Button
@@ -149,7 +149,7 @@ export default function Header() {
                     <div className="p-4 text-center">No results found</div>
                   ) : (
                     <div>
-                      {searchResults?.slice(0, 5).map((movie: any) => (
+                      {searchResults?.slice(0, 5).map((movie: Movie) => (
                         <Link
                           key={movie.id}
                           href={`/movies/${movie.id}`}
@@ -207,7 +207,6 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Theme toggle button for desktop layout */}
           <div className="hidden lg:block">
             {mounted ? (
               <Button

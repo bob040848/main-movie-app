@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3";
@@ -14,7 +14,6 @@ const validatePage = (page: number): number => {
   if (isNaN(Number(page)) || page < 1) {
     return 1;
   }
-  // Limit to 10 pages as per requirement
   return Math.min(Math.floor(page), 10);
 };
 
@@ -25,7 +24,6 @@ const fetchMovies = async (endpoint: string, page = 1) => {
       params: { page: validPage },
     });
 
-    // Limit total pages to 10 in the response
     const modifiedResponse = {
       ...response.data,
       total_pages: Math.min(response.data.total_pages, 10),
@@ -60,7 +58,6 @@ export const searchMovies = async (query: string, page = 1) => {
       },
     });
 
-    // Limit total pages to 10 in the response
     const modifiedResponse = {
       ...response.data,
       total_pages: Math.min(response.data.total_pages, 10),
@@ -91,17 +88,17 @@ export const getMoviesByGenre = async (genreIds: number[], page = 1) => {
       },
     });
 
-    // Limit total pages to 10 in the response
     const modifiedResponse = {
       ...response.data,
       total_pages: Math.min(response.data.total_pages, 10),
     };
 
     return modifiedResponse;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ status_message?: string }>;
     console.error(
       `Error fetching movies for genres ${genreIds?.join(",") || "unknown"}:`,
-      error.response?.data?.status_message || error.message
+      axiosError.response?.data?.status_message || axiosError.message
     );
     throw error;
   }

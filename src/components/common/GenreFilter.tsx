@@ -3,6 +3,7 @@ import { Filter, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useGenres } from "@/hooks/useGenres";
+import { Genre } from "@/types";
 
 interface GenreFilterProps {
   className?: string;
@@ -59,7 +60,7 @@ export default function GenreFilter({ className }: GenreFilterProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-1 mt-1">
-                {genres?.map((genre: any) => (
+                {genres?.map((genre: Genre) => (
                   <Button
                     key={genre.id}
                     variant="ghost"

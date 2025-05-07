@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import GenreButton from "./GenreButton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Genre } from "@/types";
 
 interface GenreListProps {
   title?: string;
@@ -25,7 +26,7 @@ export default function GenreList({
   const { genres, isLoading } = useGenres();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredGenres = genres?.filter((genre: any) =>
+  const filteredGenres = genres?.filter((genre: Genre) =>
     genre.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -72,7 +73,7 @@ export default function GenreList({
           columns === 2 ? "grid-cols-2" : "grid-cols-1"
         } gap-2 mt-4`}
       >
-        {filteredGenres?.map((genre: any) => (
+        {filteredGenres?.map((genre: Genre) => (
           <GenreButton
             key={genre.id}
             id={genre.id}

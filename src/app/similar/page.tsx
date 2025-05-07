@@ -2,20 +2,19 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMovieDetails } from "@/hooks/useMovies";
-import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Star, Filter } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
+import { Movie } from "@/types";
 
 export default function SimilarMoviesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const movieId = parseInt(searchParams.get("id") || "0", 10);
   const { movie, isLoading } = useMovieDetails(movieId);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState("popularity.desc");
+  const sortBy = "popularity.desc";
 
   if (isLoading) {
     return (
@@ -55,7 +54,6 @@ export default function SimilarMoviesPage() {
 
   const similarMovies = movie.similar?.results || [];
 
-  // Sort movies based on the selected option
   const sortedMovies = [...similarMovies].sort((a, b) => {
     if (sortBy === "popularity.desc") {
       return b.popularity - a.popularity;
@@ -68,10 +66,6 @@ export default function SimilarMoviesPage() {
     }
     return 0;
   });
-
-  const toggleFilter = () => {
-    setFilterOpen(!filterOpen);
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -128,7 +122,7 @@ export default function SimilarMoviesPage() {
                     : "N/A"}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  {movie.genre_ids?.slice(0, 2).map((genreId: any) => (
+                  {movie.genre_ids?.slice(0, 2).map((genreId: number) => (
                     <span
                       key={genreId}
                       className="text-xs bg-muted px-2 py-0.5 rounded-full"
@@ -146,9 +140,9 @@ export default function SimilarMoviesPage() {
   );
 }
 
-function getGenreName(genreId: number, movie: any): string {
+function getGenreName(genreId: number, movie: Movie): string {
   if (movie.genres) {
-    const genre = movie.genres.find((g: any) => g.id === genreId);
+    const genre = movie.genres.find((g) => g.id === genreId);
     if (genre) return genre.name;
   }
 

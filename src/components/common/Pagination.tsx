@@ -17,28 +17,18 @@ const Pagination: FC<PaginationProps> = ({
   isLoading = false,
   className = "",
 }) => {
-  // If there's only one page or no pages, don't render pagination
   if (!totalPages || totalPages <= 1) return null;
 
-  // Limit total pages to 10 as per requirement
   const maxPages = Math.min(totalPages, 10);
 
-  // Calculate which page numbers to display
   const getPageNumbers = (): number[] => {
-    // For 7 or fewer pages, show all pages
     if (maxPages <= 7) {
       return Array.from({ length: maxPages }, (_, i) => i + 1);
     }
 
-    // Always include first and last page
-    const pages: number[] = [];
-
-    // Show first 3 pages, last 3 pages, and pages around current
     if (currentPage <= 4) {
-      // Near start: show 1,2,3,4,5,...,maxPages
       return [1, 2, 3, 4, 5, maxPages];
     } else if (currentPage >= maxPages - 3) {
-      // Near end: show 1,...,maxPages-4,maxPages-3,maxPages-2,maxPages-1,maxPages
       return [
         1,
         maxPages - 4,
@@ -48,7 +38,6 @@ const Pagination: FC<PaginationProps> = ({
         maxPages,
       ];
     } else {
-      // Middle: show 1,...,currentPage-1,currentPage,currentPage+1,...,maxPages
       return [1, currentPage - 1, currentPage, currentPage + 1, maxPages];
     }
   };
@@ -70,7 +59,6 @@ const Pagination: FC<PaginationProps> = ({
 
         <div className="flex items-center">
           {pageNumbers.map((pageNumber, index) => {
-            // Add ellipsis where there are gaps
             const needsEllipsisBefore =
               index > 0 && pageNumber > pageNumbers[index - 1] + 1;
 

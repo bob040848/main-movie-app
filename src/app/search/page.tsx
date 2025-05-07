@@ -1,4 +1,3 @@
-//src/app/search/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,17 +7,14 @@ import MovieCard from "@/components/common/MovieCard";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
 import GenreList from "@/components/common/GenreList";
 import Pagination from "@/components/common/Pagination";
-import { useGenres } from "@/hooks/useGenres";
 import { Movie } from "@/types";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const [page, setPage] = useState<number>(1);
-  const router = useRouter();
 
   const { movies, totalPages, isLoading } = useMovieSearch(query, page);
-  const { genres } = useGenres();
 
   useEffect(() => {
     setPage(1);

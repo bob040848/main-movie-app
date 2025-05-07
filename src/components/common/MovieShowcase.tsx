@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Clock, Star, Play } from "lucide-react";
 import { useNowPlayingMovies } from "@/hooks/useMovies";
+import { Movie } from "@/types";
 
 export default function MovieShowcase() {
   const { movies, isLoading } = useNowPlayingMovies();
@@ -54,7 +55,6 @@ export default function MovieShowcase() {
 
   return (
     <div className="relative w-full h-96 md:h-[500px] rounded-lg overflow-hidden">
-      {/* Left navigation button */}
       <div className="absolute left-0 top-0 bottom-0 flex items-center z-10 px-2">
         <Button
           variant="outline"
@@ -67,7 +67,6 @@ export default function MovieShowcase() {
         </Button>
       </div>
 
-      {/* Right navigation button */}
       <div className="absolute right-0 top-0 bottom-0 flex items-center z-10 px-2">
         <Button
           variant="outline"
@@ -130,7 +129,7 @@ export default function MovieShowcase() {
       </div>
 
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-1">
-        {movies.slice(0, 10).map((_: any, index: any) => (
+        {movies.slice(0, 10).map((movie: Movie, index: number) => (
           <button
             key={index}
             className={`h-1.5 rounded-full transition-all ${
