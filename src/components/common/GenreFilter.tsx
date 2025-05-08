@@ -7,9 +7,13 @@ import { Genre } from "@/types";
 
 type GenreFilterProps = {
   className?: string;
+  onGenreSelect?: () => void;
 };
 
-export default function GenreFilter({ className }: GenreFilterProps) {
+export default function GenreFilter({
+  className,
+  onGenreSelect,
+}: GenreFilterProps) {
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
   const genreDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -34,6 +38,10 @@ export default function GenreFilter({ className }: GenreFilterProps) {
   const handleGenreClick = (id: number, name: string) => {
     router.push(`/genres?id=${id}&name=${encodeURIComponent(name)}`);
     setShowGenreDropdown(false);
+
+    if (onGenreSelect) {
+      onGenreSelect();
+    }
   };
 
   return (

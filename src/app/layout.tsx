@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import Header from "@/components/common/Header";
+import { SearchProvider } from "@/context/SearchContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
-          <main className="container mx-auto px-4 py-8">{children}</main>
+          <SearchProvider>
+            <Header />
+            <main className="container mx-auto px-4 py-8">{children}</main>
+          </SearchProvider>
         </ThemeProvider>
       </body>
     </html>

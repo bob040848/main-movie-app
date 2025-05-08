@@ -1,31 +1,68 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useMovieSearch } from "@/hooks/useMovies";
 import MovieCard from "@/components/common/MovieCard";
 import MovieCardSkeleton from "@/components/common/MovieCardSkeleton";
 import GenreList from "@/components/common/GenreList";
 import Pagination from "@/components/common/Pagination";
 import { Movie } from "@/types";
+import { useSearchContext } from "@/context/SearchContext";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
+  const urlQuery = searchParams.get("q") || "";
   const [page, setPage] = useState<number>(1);
+  const router = useRouter();
+  const updateUrlDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { movies, totalPages, isLoading } = useMovieSearch(query, page);
+  const { globalSearchQuery, setGlobalSearchQuery } = useSearchContext();
+
+  useEffect(() => {
+    if (urlQuery) {
+      setGlobalSearchQuery(urlQuery);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!globalSearchQuery || globalSearchQuery === urlQuery) return;
+
+    if (updateUrlDebounceRef.current) {
+      clearTimeout(updateUrlDebounceRef.current);
+    }
+
+    updateUrlDebounceRef.current = setTimeout(() => {
+      const newUrl = `/search?q=${encodeURIComponent(
+        globalSearchQuery.trim()
+      )}`;
+      router.replace(newUrl);
+    }, 500);
+
+    return () => {
+      if (updateUrlDebounceRef.current) {
+        clearTimeout(updateUrlDebounceRef.current);
+      }
+    };
+  }, [globalSearchQuery, router, urlQuery]);
+
+  const effectiveQuery = globalSearchQuery || urlQuery;
+
+  const { movies, totalPages, isLoading } = useMovieSearch(
+    effectiveQuery,
+    page
+  );
 
   useEffect(() => {
     setPage(1);
-  }, [query]);
+  }, [effectiveQuery]);
 
   const handlePageChange = (newPage: number): void => {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (!query) {
+  if (!effectiveQuery) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
@@ -47,10 +84,10 @@ export default function SearchPage() {
               <h1 className="text-2xl font-bold mb-2">Search results</h1>
               <p className="text-muted-foreground">
                 {movies?.length
-                  ? `${movies.length} results for "${query}"`
+                  ? `${movies.length} results for "${effectiveQuery}"`
                   : isLoading
                   ? "Searching..."
-                  : `0 results for "${query}"`}
+                  : `0 results for "${effectiveQuery}"`}
               </p>
             </div>
 
